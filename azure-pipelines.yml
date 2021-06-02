@@ -1,5 +1,7 @@
-#Demo Spring application
-
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
 trigger:
   branches:
     include:
@@ -7,19 +9,17 @@ trigger:
 pr:
   branches:
     include:
-      - master      
-
+      - master
 pool:
   vmImage: ubuntu-latest
-
 stages:
-  - stage: 'Junit'
-    displayName: 'Junit Stage'
+  - stage: 'junit'
+    displayName: 'Stage Aathi Junit Test Trial'
     jobs:
-      - job: 'JunitTest'
-        displayName: 'Running unit tests'
+      - job: 'junit'
+        displayName: 'Job Name Aathi Junit Test trial'
         steps:
-          - script: echo 'Running Spring demo app unit test'
+          - script: echo 'Running Aathi test trial'
           - task: Maven@3
             inputs:
               mavenPomFile: 'pom.xml'
@@ -35,12 +35,12 @@ stages:
               sonarQubeRunAnalysis: false
               checkStyleRunAnalysis: true
               pmdRunAnalysis: true
-              
   - stage: 'BuildArtifact'
-    displayName: ' Building Artifact'
+    displayName: 'Stage 2 Aathi Artifacts'
+    condition: and(succeeded(),ne(variables,['Build.Reason'],'PullRequest'))
     jobs:
       - job: 'BuildArtifact'
-        displayName: 'Building Artifact'
+        displayName: 'Job 2 Aathi Artifacts'
         steps:
         - task: Maven@3
           inputs:
