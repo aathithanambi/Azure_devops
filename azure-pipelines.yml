@@ -37,7 +37,7 @@ stages:
               pmdRunAnalysis: true
   - stage: 'BuildArtifact'
     displayName: 'Stage 2 Aathi Artifacts'
-    condition: and(succeeded(),ne(variables,['Build.Reason'],'PullRequest'))
+    condition: and(succeeded(),ne(variables['Build.Reason'],'PullRequest'))
     dependsOn: 'junit'
     jobs:
       - job: 'BuildArtifact'
