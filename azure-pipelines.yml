@@ -4,7 +4,13 @@
 # https://aka.ms/yaml
 
 trigger:
-  - video#2-stage
+ branches:
+    include:
+      - master
+pr:
+  branches:
+    include:
+      - master
 
 pool:
   vmImage: ubuntu-latest
@@ -32,4 +38,26 @@ stages:
               sonarQubeRunAnalysis: false
               checkStyleRunAnalysis: true
               pmdRunAnalysis: true
+              
+  - stage: 'BuildArtifact'
+    displayName: 'Aathis Devops Building Artifact stage 2'
+    condition: and(succeeded(),ne(variables['Build.Reason'],'PullRequest'))
+    dependsOn: 'Junit'
+    jobs:
+      - job: 'Aathis Devops BuildArtifact job 2'
+        displayName: 'Building Artifact'
+        steps:
+        - task: Maven@3
+          inputs:
+            mavenPomFile: 'pom.xml'
+            goals: 'clean package'
+            options: '--no-transfer-progress'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
+
               
