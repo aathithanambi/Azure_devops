@@ -38,8 +38,8 @@ stages:
               pmdRunAnalysis: true
               
   - stage: 'BuildArtifact'
-    displayName: 'Aathis Devops Building Artifact Stage -2 '
-    condition: and(succeeded(),ne(variables['Build.Reason'],'PullRequest') 
+    displayName: 'Aathis Devops Building Artifact Stage -2'
+    condition: and(succeeded(),ne(variables['Build.Reason'],'PullRequest')) 
     dependsOn: 'Junit'
     jobs:
       - job: 'BuildArtifact'
