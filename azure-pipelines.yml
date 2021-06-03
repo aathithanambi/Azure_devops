@@ -4,18 +4,32 @@
 # https://aka.ms/yaml
 
 trigger:
-  branches:
-    include:
-      - master
-pr:
- branches:
-   include:
-    - master     
+  - video#2-stage
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
+stages:
+  - stage: 'Junit'
+    displayName: 'Aathis Devops Junit Stage -1 run'
+    jobs:
+      - job: 'JunitTest'
+        displayName: 'Running unit tests'
+        steps:
+          - script: echo 'Running Spring demo app unit test'
+          - task: Maven@3
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'test'
+              options: '--no-transfer-progress'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              codeCoverageToolOption: 'JaCoCo'
+              javaHomeOption: 'JDKVersion'
+              mavenVersionOption: 'Default'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
+              sonarQubeRunAnalysis: false
+              checkStyleRunAnalysis: true
+              pmdRunAnalysis: true
+              
