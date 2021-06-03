@@ -38,14 +38,14 @@ stages:
               sonarQubeRunAnalysis: false
               checkStyleRunAnalysis: true
               pmdRunAnalysis: true
-              
+
   - stage: 'BuildArtifact'
     displayName: 'Aathis Devops Building Artifact stage 2'
     condition: and(succeeded(),ne(variables['Build.Reason'],'PullRequest'))
     dependsOn: 'Junit'
     jobs:
-      - job: 'Aathis Devops BuildArtifact job 2'
-        displayName: 'Building Artifact'
+      - job: 'BuildArtifact'
+        displayName: 'Aathis Devops Building Artifact job 2'
         steps:
         - task: Maven@3
           inputs:
