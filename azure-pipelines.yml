@@ -1,0 +1,56 @@
+trigger:
+ branches:
+    include:
+      - master
+pr:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: 'Junit'
+    displayName: 'Aathis Devops Junit Stage -1 run'
+    jobs:
+      - job: 'JunitTest'
+        displayName: 'Running unit tests'
+        steps:
+          - script: echo 'Running Spring demo app unit test'
+          - task: Maven@3
+            inputs:
+              mavenPomFile: 'pom.xml'
+              goals: 'test'
+              options: '--no-transfer-progress'
+              publishJUnitResults: true
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
+              codeCoverageToolOption: 'JaCoCo'
+              javaHomeOption: 'JDKVersion'
+              mavenVersionOption: 'Default'
+              mavenAuthenticateFeed: false
+              effectivePomSkip: false
+              sonarQubeRunAnalysis: false
+              checkStyleRunAnalysis: true
+              pmdRunAnalysis: true
+
+  - stage: 'BuildArtifact'
+    displayName: 'Aathis Devops Building Artifact stage 2'
+    condition: and(succeeded(),ne(variables['Build.Reason'],'PullRequest'))
+    dependsOn: 'Junit'
+    jobs:
+      - job: 'BuildArtifact'
+        displayName: 'Aathis Devops Building Artifact job 2'
+        steps:
+        - task: Maven@3
+          inputs:
+            mavenPomFile: 'pom.xml'
+            goals: 'clean package'
+            options: '--no-transfer-progress'
+            publishJUnitResults: true
+            testResultsFiles: '**/surefire-reports/TEST-*.xml'
+            javaHomeOption: 'JDKVersion'
+            mavenVersionOption: 'Default'
+            mavenAuthenticateFeed: false
+            effectivePomSkip: false
+            sonarQubeRunAnalysis: false
